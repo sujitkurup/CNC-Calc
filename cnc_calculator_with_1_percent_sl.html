@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V&S CNC Position Size Calculator with Fixed 1% SL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(to right, #a1c4fd, #fbc2eb);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 50%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+            width: 95%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>V&S CNC Calculator</h2>
+        <label for="capital">Capital:</label>
+        <input type="number" id="capital" value="10000">
+        
+        <label for="stockPrice">Stock Price (Entry):</label>
+        <input type="number" id="stockPrice">
+        
+        <button onclick="calculate()">Calculate</button>
+        
+        <div class="result" id="result"></div>
+    </div>
+    
+    <script>
+        function calculate() {
+            let capital = parseFloat(document.getElementById("capital").value);
+            let stockPrice = parseFloat(document.getElementById("stockPrice").value);
+            
+            if (isNaN(capital) || isNaN(stockPrice) || stockPrice <= 0) {
+                document.getElementById("result").innerHTML = "<p style='color:red;'>Please enter valid numbers.</p>";
+                return;
+            }
+
+            let stopLoss = stockPrice - (stockPrice * 0.01); // 1% below entry
+            let riskPerShare = stockPrice - stopLoss;
+            let quantity = Math.floor(capital / stockPrice);
+            let usedCapital = quantity * stockPrice;
+            let remaining = capital - usedCapital;
+
+            let target1 = stockPrice + riskPerShare;
+            let target2 = stockPrice + (2 * riskPerShare);
+
+            document.getElementById("result").innerHTML =
+                `<p>Stop Loss (1%): <strong>${stopLoss.toFixed(2)}</strong></p>
+                <p>Quantity You Can Buy: <strong>${quantity}</strong></p>
+                <p>Used Capital: <strong>${usedCapital.toFixed(2)}</strong></p>
+                <p>Remaining Capital: <strong>${remaining.toFixed(2)}</strong></p>
+                <p>1:1 Target: <strong>${target1.toFixed(2)}</strong></p>
+                <p>1:2 Target: <strong>${target2.toFixed(2)}</strong></p>`;
+        }
+    </script>
+</body>
+</html>
